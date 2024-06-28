@@ -252,41 +252,6 @@ return {
     end,
   },
   {
-    "anuvyklack/pretty-fold.nvim",
-    lazy = false,
-    config = function()
-      require("pretty-fold").setup {
-        keep_indentation = true,
-        remove_fold_markers = true,
-        process_comment_signs = "spaces",
-        comment_signs = {},
-        add_close_pattern = true,
-        matchup_patterns = {
-          { "{", "}" },
-          { "%(", ")" }, -- % to escape lua pattern char
-          { "%[", "]" }, -- % to escape lua pattern char
-        },
-        ft_ignore = { "neorg" },
-        fill_char = "•",
-        sections = {
-          left = {
-            "content",
-          },
-          right = {
-            " ",
-            "number_of_folded_lines",
-            ": ",
-            "percentage",
-            " ",
-            function(config)
-              return config.fill_char:rep(3)
-            end,
-          },
-        },
-      }
-    end,
-  },
-  {
     "anuvyklack/keymap-amend.nvim",
     lazy = false,
   },
@@ -330,10 +295,100 @@ return {
     dependencies = { "kevinhwang91/promise-async" },
     config = function()
       require("ufo").setup {
+        open_fold_hl_timeout = 150,
+        preview = {
+          win_config = {
+            winblend = 0,
+            winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+          },
+        },
+        fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
+          local newVirtText = {}
+          local suffix = (" 󰁂 %d "):format(endLnum - lnum)
+          local sufWidth = vim.fn.strdisplaywidth(suffix)
+          local targetWidth = width - sufWidth
+          local curWidth = 0
+          for _, chunk in ipairs(virtText) do
+            local chunkText = chunk[1]
+            local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+            if targetWidth > curWidth + chunkWidth then
+              table.insert(newVirtText, chunk)
+            else
+              chunkText = truncate(chunkText, targetWidth - curWidth)
+              local hlGroup = chunk[2]
+              table.insert(newVirtText, { chunkText, hlGroup })
+              chunkWidth = vim.fn.strdisplaywidth(chunkText)
+              -- str width returned from truncate() may less than 2nd argument, need padding
+              if curWidth + chunkWidth < targetWidth then
+                suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
+              end
+              break
+            end
+            curWidth = curWidth + chunkWidth
+          end
+          table.insert(newVirtText, { suffix, "MoreMsg" })
+          return newVirtText
+        end,
         provider_selector = function()
           return { "treesitter", "indent" }
         end,
       }
     end,
+  },
+  {
+    "luukvbaal/statuscol.nvim",
+    opts = function()
+      local builtin = require "statuscol.builtin"
+      return {
+        setopt = true,
+        -- override the default list of segments with:
+        -- number-less fold indicator, then signs, then line number & separator
+        segments = {
+          { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
+          { text = { "%s" }, click = "v:lua.ScSa" },
+          {
+            text = { builtin.lnumfunc, " " },
+            condition = { true, builtin.not_empty },
+            click = "v:lua.ScLa",
+          },
+        },
+      }
+    end,
+  },
+  {
+    "ap/vim-css-color",
+    lazy = false,
+  },
+  {
+    "tpope/vim-surround",
+    lazy = false,
+  },
+  {
+    "tpope/vim-repeat",
+    lazy = false,
+  },
+  {
+    "mg979/vim-visual-multi",
+    lazy = false,
+    branch = "master",
+  },
+  {
+    "kdheepak/lazygit.nvim",
+    cmd = {
+      "LazyGit",
+      "LazyGitConfig",
+      "LazyGitCurrentFile",
+      "LazyGitFilter",
+      "LazyGitFilterCurrentFile",
+    },
+    -- optional for floating window border decoration
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    -- setting the keybinding for LazyGit with 'keys' is recommended in
+    -- order to load the plugin when the command is run for the first time
+    keys = {
+      { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+    },
   },
 }

@@ -76,10 +76,10 @@ map("t", "<C-f>", function()
   require("nvchad.term").toggle { pos = "float" }
 end, { desc = "Toogle Terminal Float" })
 
--- Basic
---
+-- Basic --
 
 map("i", "jj", "<ESC>")
+map("i", "оо", "<ESC>")
 map("i", "<C-g>", function()
   return vim.fn["codeium#Accept"]()
 end, { expr = true })

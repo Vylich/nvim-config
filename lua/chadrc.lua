@@ -6,7 +6,7 @@ local M = {}
 
 M.ui = {
   theme = "catppuccin",
-  theme_toggle = { "material-lighter", "catppuccin" },
+  theme_toggle = { "material-lighter", "bearded-arc" },
   transparency = false,
   statusline = {
     theme = "vscode_colored",
