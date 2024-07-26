@@ -64,7 +64,7 @@ map("n", "<C-\\>", function()
   require("nvchad.term").toggle { pos = "sp", size = 0.4 }
 end, { desc = "Toogle Terminal Horizontal" })
 map("n", "<C-f>", function()
-  require("nvchad.term").toggle { pos = "float" }
+  require("nvchad.term").toggle { pos = "float", size = 0.9 }
 end, { desc = "Toogle Terminal Float" })
 map("t", "<C-]>", function()
   require("nvchad.term").toggle { pos = "vsp" }
