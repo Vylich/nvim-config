@@ -5,7 +5,7 @@
 local M = {}
 
 M.ui = {
-  theme = "catppuccin",
+  theme = "bearded-arc",
   theme_toggle = { "material-lighter", "bearded-arc" },
   transparency = false,
   statusline = {
