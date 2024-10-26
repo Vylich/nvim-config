@@ -337,19 +337,21 @@ return {
   },
   {
     "luukvbaal/statuscol.nvim",
-    opts = function()
+    config = function()
       local builtin = require "statuscol.builtin"
-      return {
-        setopt = true,
-        -- override the default list of segments with:
-        -- number-less fold indicator, then signs, then line number & separator
+      require("statuscol").setup {
+        -- configuration goes here, for example:
+        relculright = true,
         segments = {
           { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
-          { text = { "%s" }, click = "v:lua.ScSa" },
           {
-            text = { builtin.lnumfunc, " " },
-            condition = { true, builtin.not_empty },
-            click = "v:lua.ScLa",
+            sign = { namespace = { "diagnostic/signs" }, maxwidth = 2, auto = true },
+            click = "v:lua.ScSa",
+          },
+          { text = { builtin.lnumfunc }, click = "v:lua.ScLa" },
+          {
+            sign = { name = { ".*" }, maxwidth = 2, colwidth = 1, auto = true, wrap = true },
+            click = "v:lua.ScSa",
           },
         },
       }
@@ -401,5 +403,91 @@ return {
     version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
     -- install jsregexp (optional!).
     build = "make install_jsregexp",
+  },
+  {
+    "giusgad/hologram.nvim",
+    lazy = false,
+    config = function()
+      require("hologram").setup {
+        auto_display = true,
+      }
+    end,
+  },
+  {
+    "giusgad/pets.nvim",
+    dependencies = { "MunifTanjim/nui.nvim", "giusgad/hologram.nvim" },
+    lazy = false,
+    config = function()
+      require("pets").setup {
+        row = 1, -- the row (height) to display the pet at (higher row means the pet is lower on the screen), must be 1<=row<=10
+        col = 0, -- the column to display the pet at (set to high number to have it stay still on the right side)
+        speed_multiplier = 1, -- you can make your pet move faster/slower. If slower the animation will have lower fps.
+        default_pet = "dog", -- the pet to use for the PetNew command
+        default_style = "brown", -- the style of the pet to use for the PetNew command
+        random = true, -- whether to use a random pet for the PetNew command, overrides default_pet and default_style
+        death_animation = true, -- animate the pet's death, set to false to feel less guilt -- currently no animations are available
+        popup = { -- popup options, try changing these if you see a rectangle around the pets
+          width = "30%", -- can be a string with percentage like "45%" or a number of columns like 45
+          winblend = 100, -- winblend value - see :h 'winblend' - only used if avoid_statusline is false
+          hl = { Normal = "Normal" }, -- hl is only set if avoid_statusline is true, you can put any hl group instead of "Normal"
+          avoid_statusline = false, --
+        },
+      }
+    end,
+  },
+  {
+    "lewis6991/gitsigns.nvim",
+    config = function()
+      require("gitsigns").setup {
+        signs = {
+          add = { text = "┃" },
+          change = { text = "┃" },
+          delete = { text = "_" },
+          topdelete = { text = "‾" },
+          changedelete = { text = "~" },
+          untracked = { text = "┆" },
+        },
+        signs_staged = {
+          add = { text = "┃" },
+          change = { text = "┃" },
+          delete = { text = "_" },
+          topdelete = { text = "‾" },
+          changedelete = { text = "~" },
+          untracked = { text = "┆" },
+        },
+        signs_staged_enable = true,
+        signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
+        numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
+        linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
+        word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
+        watch_gitdir = {
+          follow_files = true,
+        },
+        auto_attach = true,
+        attach_to_untracked = false,
+        current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+        current_line_blame_opts = {
+          virt_text = true,
+          virt_text_pos = "eol", -- 'eol' | 'overlay' | 'right_align'
+          delay = 1000,
+          ignore_whitespace = false,
+          virt_text_priority = 100,
+          use_focus = true,
+        },
+        current_line_blame_formatter = "<author>, <author_time:%R> - <summary>",
+        sign_priority = 6,
+        update_debounce = 100,
+        status_formatter = nil, -- Use default
+        max_file_length = 40000, -- Disable if file is longer than this (in lines)
+        preview_config = {
+          -- Options passed to nvim_open_win
+          border = "single",
+          style = "minimal",
+          relative = "cursor",
+          row = 0,
+          col = 1,
+        },
+      }
+    end,
   },
 }

@@ -61,10 +61,13 @@ map("n", "<C-]>", function()
   require("nvchad.term").toggle { pos = "vsp", size = 0.4 }
 end, { desc = "Toogle Terminal Vertical" })
 map("n", "<C-\\>", function()
-  require("nvchad.term").toggle { pos = "sp", size = 0.4 }
+  require("nvchad.term").toggle { pos = "sp", size = 0.2 }
 end, { desc = "Toogle Terminal Horizontal" })
 map("n", "<C-f>", function()
-  require("nvchad.term").toggle { pos = "float", size = 0.9 }
+  require("nvchad.term").toggle {
+    pos = "float",
+    float_opts = { width = 0.7, height = 0.6, row = 0.2, col = 0.15 },
+  }
 end, { desc = "Toogle Terminal Float" })
 map("t", "<C-]>", function()
   require("nvchad.term").toggle { pos = "vsp" }

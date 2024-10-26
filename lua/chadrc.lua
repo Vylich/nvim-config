@@ -4,13 +4,35 @@
 ---@type ChadrcConfig
 local M = {}
 
+vim.cmd "highlight St_relativepath guifg=#b2b2b2 guibg=#303847"
+
+local stbufnr = function()
+  return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
+end
+
 M.ui = {
   theme = "bearded-arc",
-  theme_toggle = { "material-lighter", "bearded-arc" },
+  theme_toggle = { "bearded-arc", "one-light" },
+
   transparency = false,
+
   statusline = {
-    theme = "vscode_colored",
+    order = { "mode", "r", "file", "git", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cwd", "cursor" },
+    theme = "default",
+
+    modules = {
+      r = function()
+        local path = vim.api.nvim_buf_get_name(stbufnr())
+
+        if path == "" then
+          return ""
+        end
+
+        return "%#St_relativepath#  " .. vim.fn.expand "%:.:h" .. " /"
+      end,
+    },
   },
+
   nvdash = {
     load_on_startup = true,
     header = {
